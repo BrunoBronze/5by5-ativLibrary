@@ -14,6 +14,7 @@ namespace Library
         {
             string op;
             List<Cliente> clientes = new List<Cliente>();
+            List<Livro> livros = new List<Livro>();
 
             Console.WriteLine("Bem vindo a livraria 5by5\n");
 
@@ -49,7 +50,8 @@ namespace Library
                             cliente.endereco = CadastroEndereco();
 
                             clientes.Add(cliente);
-                            Console.Write("Cliente cadastrado...");
+                            Console.Clear();
+                            Console.Write("Cliente cadastrado...\n\n");
                         }
                         
                         break;
@@ -60,7 +62,24 @@ namespace Library
                         #region Cadastro do livro
 
                         //Cadastro do livro
-                        Console.Clear();
+
+                        Console.Write("\nDigite o ISBN do livro: ");
+                        string isbn = Console.ReadLine();
+
+                        if (LivroCadastrado(isbn))
+                        {
+                            //trazendo informações do livro
+                            Console.WriteLine("Livro já cadastrado!");
+                            Console.WriteLine("Trazer informações do livro");
+                        }
+                        else
+                        {
+                            livros.Add(CadastroLivro());
+
+                            Console.Clear();
+                            Console.Write("Livro cadastrado...\n\n");
+                            //salvar o arquivo
+                        }
                         break;
 
                     #endregion
@@ -147,12 +166,10 @@ namespace Library
                               "5 - Relatório de Empréstimos e Devoluções\n" +
                               "0 - Finalizar o Programa\n");
         }
-
         static bool ClienteCadastrado(string cpf)
         {
             return false;
         }
-
         static Cliente CadastroCliente()
         {
 
@@ -173,7 +190,7 @@ namespace Library
                 
                 if (!DateTime.TryParseExact(dnascimento, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dataNascimento))
                 {
-                    Console.WriteLine("Digite novamente a data no formato (dd/mm/aaaa)");
+                    Console.WriteLine("Digite novamente a data no formato dd/mm/aaaa");
                 }
                 else
                 {
@@ -223,6 +240,53 @@ namespace Library
             };
 
             return endereco;
+        }
+        static bool LivroCadastrado(string isbn)
+        {
+            return false;
+        }
+        static Livro CadastroLivro()
+        {
+            string titulo;
+            string genero;
+            DateTime dataPublicacao;
+            string autor;
+            bool dataCorreta = false;
+
+            Console.WriteLine("\n>>> Cadastro do livro <<<");
+            Console.Write("Digite o titulo do livro: ");
+            titulo = Console.ReadLine();
+
+            Console.Write("Digite o genero do livro: ");
+            genero = Console.ReadLine();
+
+            do
+            {
+                Console.Write("Digite a data de publicação do livro (dd/mm/aaaa): ");
+                string dPublicacao = Console.ReadLine();
+
+                if (!DateTime.TryParseExact(dPublicacao, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dataPublicacao))
+                {
+                    Console.WriteLine("Digite novamente a data no formato dd/mm/aaaa");
+                }
+                else
+                {
+                    dataCorreta = true;
+                }
+            } while (!dataCorreta);
+
+            Console.Write("Digite o autor do livro: ");
+            autor = Console.ReadLine();
+
+            Livro livro = new Livro
+            {
+                Titulo = titulo,
+                Genero = genero,
+                DataPublicao = dataPublicacao,
+                Autor = autor
+            };
+
+            return livro;
         }
     }
 }

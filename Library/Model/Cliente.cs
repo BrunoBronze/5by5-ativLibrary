@@ -18,12 +18,12 @@ namespace Model
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"IdCliente : {IdCliente}");
-            sb.AppendLine($"CPF : {CPF}");
-            sb.AppendLine($"Nome : {Nome}");
-            sb.AppendLine($"Data de Nascimento : {DataNascimento:dd/MM/yyyy}");
-            sb.AppendLine($"Telefone : {Telefone}");
-            sb.AppendLine($"Endereço : {endereco}");
+            sb.AppendLine($"IdCliente: {IdCliente}");
+            sb.AppendLine($"CPF: {CPF}");
+            sb.AppendLine($"Nome: {Nome}");
+            sb.AppendLine($"Data de Nascimento: {DataNascimento:dd/MM/yyyy}");
+            sb.AppendLine($"Telefone: {Telefone}");
+            sb.AppendLine($"Endereço: {endereco}");
 
             return sb.ToString();
         }
