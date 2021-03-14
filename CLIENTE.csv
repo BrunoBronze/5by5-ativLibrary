@@ -1,1 +1,3 @@
-IdCliente;CPF;Nome;DataNascimento;Telefone;Logradouro;Bairro;Cidade;Estado;CEP 
+IdCliente ;CPF ;Nome ;DataNascimento ;Telefone ;Logradouro ;Bairro ;Cidade ;Estado ;CEP 
+1 ;43831426805;Bruno Bronze;24/03/2000;16997252079;Av. Professor Augusto Cesar 697;Centro;Araraquara;SP;14801240
+2 ;41341276880;Amanda Souza;16/07/1994;16997541835;Av. Dionisio Tellaroli 802;Jardim São Rafael II;Araraquara;SP;14806806

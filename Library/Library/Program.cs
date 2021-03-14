@@ -1,5 +1,6 @@
 ﻿using System;
 using Model;
+using Controller;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,9 +14,31 @@ namespace Library
         static void Main(string[] args)
         {
             string op;
+
+            ArquivoCliente arquivoCliente = new ArquivoCliente();
+            ArquivoEmprestimo arquivoEmprestimo = new ArquivoEmprestimo();
+            ArquivoLivro arquivoLivro = new ArquivoLivro();
+
             List<Cliente> clientes = new List<Cliente>();
             List<Livro> livros = new List<Livro>();
             List<EmprestimoLivro> emprestimos = new List<EmprestimoLivro>();
+
+            #region Criar Arquivos
+
+            if (!ArquivoCSV.CriarDiretorio())
+            {
+                clientes = arquivoCliente.Leitura();
+                livros = arquivoLivro.Leitura();
+                emprestimos = arquivoEmprestimo.Leitura();
+            }
+            else
+            {
+                arquivoCliente.CriarArquivo();
+                arquivoEmprestimo.CriarArquivo();
+                arquivoLivro.CriarArquivo();
+            }
+
+            #endregion
 
             Console.WriteLine("Bem vindo a livraria 5by5\n");
 
@@ -50,6 +73,8 @@ namespace Library
                             clientes.Add(cliente);
                             Console.Clear();
                             Console.Write("Cliente cadastrado...\n\n");
+                            //salvar arquivo
+                            arquivoCliente.Leitura();
                         }
                         
                         break;

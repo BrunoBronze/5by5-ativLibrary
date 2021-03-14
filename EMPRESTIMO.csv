@@ -1,1 +1,3 @@
-IdCliente;NumeroTombo;DataEmprestimo ;DataDevolucao ;StatusEmprestimo 
+IdCliente ;NumeroTombo ;DataEmprestimo ;DataDevolucao ;StatusEmprestimo 
+1;1;13/03/2021;13/04/2021;1
+2;2;10/03/2021;10/04/2021;2

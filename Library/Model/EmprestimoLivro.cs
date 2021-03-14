@@ -9,6 +9,8 @@ namespace Model
 {
     public class EmprestimoLivro
     {
+        public long IdCliente { get; set; }
+        public long NumeroTombo { get; set; }
         public DateTime DataEmprestimo { get; set; }
         public DateTime DataDevolucao { get; set; }
         public int StatusEmprestimo { get; set; }
@@ -26,8 +28,8 @@ namespace Model
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Data de emprestimo: {DataEmprestimo}");
-            sb.AppendLine($"Data de devolucao: {DataDevolucao}");
+            sb.AppendLine($"Data de emprestimo: {DataEmprestimo:dd/MM/yyyy}");
+            sb.AppendLine($"Data de devolucao: {DataDevolucao:dd/MM/yyyy}");
             sb.AppendLine($"Status de Emprestimo: {status}");
 
             return sb.ToString();
