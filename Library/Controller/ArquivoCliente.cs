@@ -12,7 +12,7 @@ namespace Controller
     public class ArquivoCliente : ArquivoCSV
     {
         public static string fileName = @"\CLIENTE.csv";
-
+       
         public void CriarArquivo()
         {
             string filePath = $@"{DirectoryPath}\{fileName}";
@@ -21,7 +21,7 @@ namespace Controller
                 File.Create(filePath);
                 using (StreamWriter sw = new StreamWriter(filePath))
                 {
-                    sw.WriteLine("IdCliente ;CPF ;Nome ;DataNascimento ;Telefone ;Logradouro ;Bairro ;Cidade ;Estado ;CEP ");
+                    sw.WriteLine("IdCliente;CPF;Nome;DataNascimento;Telefone;Logradouro;Bairro;Cidade;Estado;CEP");
                 }
             }
         }

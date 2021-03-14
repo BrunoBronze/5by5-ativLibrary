@@ -21,7 +21,7 @@ namespace Controller
                 File.Create(filePath);
                 using (StreamWriter sw = new StreamWriter(filePath))
                 {
-                    sw.WriteLine("IdCliente ;NumeroTombo ;DataEmprestimo ;DataDevolucao ;StatusEmprestimo ");
+                    sw.WriteLine("IdCliente;NumeroTombo;DataEmprestimo;DataDevolucao;StatusEmprestimo");
                 }
             }
         }

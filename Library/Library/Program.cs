@@ -76,7 +76,7 @@ namespace Library
                             //salvar arquivo
                             arquivoCliente.Leitura();
                         }
-                        
+
                         break;
 
                     #endregion
@@ -138,7 +138,51 @@ namespace Library
                         #region Devolução do Livro
 
                         //Devolução do Livro
+
                         Console.Clear();
+
+                        if (EmprestimoCadastrado("apenas para funcionar"))
+                        {
+                            Console.WriteLine("Livro não encontrado para devolução");
+                        }
+                        else
+                        {
+                            int nEmprestimo = 0; //procurar o index do emprestimo
+
+                            double multa = EmprestimoLivro.CalculaMulta(emprestimos.ElementAt(nEmprestimo));
+                            if (multa > 0)
+                            {
+                                Console.WriteLine($"\nMulta a ser paga: R$ {multa:F2}");
+                                string resposta;
+                                do
+                                {
+                                    Console.Write("A multa foi paga sim ou não(s/n)? ");
+                                    resposta = Console.ReadLine().ToLower();
+                                    if (resposta == "s")
+                                    {
+                                        //alterar situação
+                                        Console.WriteLine("\nSituação alterada para \"Devolvido\"...\n");
+                                    }
+                                    else if (resposta != "n")
+                                    {
+                                        Console.WriteLine("Digite \"s\" ou \"n\"");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine();//apenas para pular uma linha
+                                    }
+                                } while (resposta != "s" && resposta != "n");
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nO prazo da devolução foi cumprido\n");
+                                //alterar situação
+                                Console.WriteLine("salvando situação para \"Devolvido\"...\n");
+                            }
+
+                            //Alterar para devolvido (2) no arquivoEmprestimo
+                        }
+
                         break;
 
                     #endregion
@@ -228,12 +272,12 @@ namespace Library
             Console.Write("Digite o nome do cliente: ");
             nome = Console.ReadLine();
 
-            
+
             do
             {
                 Console.Write("Digite a data de nascimento do cliente (dd/mm/aaaa): ");
                 string dnascimento = Console.ReadLine();
-                
+
                 if (!DateTime.TryParseExact(dnascimento, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dataNascimento))
                 {
                     Console.WriteLine("Digite novamente a data no formato dd/mm/aaaa");
@@ -250,7 +294,7 @@ namespace Library
             Cliente cliente = new Cliente
             {
                 Nome = nome,
-                DataNascimento =  dataNascimento,
+                DataNascimento = dataNascimento,
                 Telefone = telefone
             };
 
@@ -362,7 +406,6 @@ namespace Library
         {
             DateTime dataDevolucao;
             bool dataCorreta = false;
-            
 
             do
             {
@@ -387,6 +430,30 @@ namespace Library
             };
 
             return emprestimo;
+        }
+        static bool EmprestimoCadastrado(string exemplo) //apenas para exemplificar outro metodo
+        {
+            string nTombo;
+            long numeroTombo;
+            bool funcionar = false;
+            do
+            {
+                Console.Write("Digite o numero do tombo: ");
+                nTombo = Console.ReadLine();
+
+                if (!long.TryParse(nTombo, out numeroTombo))
+                {
+                    Console.WriteLine("Digite um número inteiro !");
+                }
+                else
+                {
+                    funcionar = true;
+                }
+            } while (!funcionar);
+
+            //Verifica Livro
+
+            return false;
         }
     }
 }

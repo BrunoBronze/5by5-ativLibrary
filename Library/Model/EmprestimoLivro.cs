@@ -15,6 +15,13 @@ namespace Model
         public DateTime DataDevolucao { get; set; }
         public int StatusEmprestimo { get; set; }
 
+        public static double CalculaMulta(EmprestimoLivro livro)
+        {
+            const double taxaMulta = 0.10;
+
+            return taxaMulta * DateTime.Today.Subtract(livro.DataDevolucao).TotalDays;
+        }
+
         public override string ToString()
         {
             string status;
