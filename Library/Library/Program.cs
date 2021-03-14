@@ -15,6 +15,7 @@ namespace Library
             string op;
             List<Cliente> clientes = new List<Cliente>();
             List<Livro> livros = new List<Livro>();
+            List<EmprestimoLivro> emprestimos = new List<EmprestimoLivro>();
 
             Console.WriteLine("Bem vindo a livraria 5by5\n");
 
@@ -35,10 +36,7 @@ namespace Library
                         Console.Clear();
                         Cliente cliente = new Cliente();
 
-                        Console.Write("Digite o CPF do cliente: ");
-                        string cpf = Console.ReadLine();
-
-                        if (ClienteCadastrado(cpf))
+                        if (ClienteCadastrado())
                         {
                             //trazendo informações do cliente
                             Console.WriteLine("Cliente já cadastrado!");
@@ -88,6 +86,24 @@ namespace Library
                         #region Empréstimo de Livro
 
                         //Empréstimo de Livro
+
+                        if (!LivroCadastrado())
+                        {
+                            Console.WriteLine("Livro não disponível");
+                        }
+                        else
+                        {
+                            if (!ClienteCadastrado())
+                            {
+                                Console.WriteLine("Cliente não cadastrado");
+                            }
+                            else
+                            {
+                                emprestimos.Add(EmprestimoCadastrado());
+                                //salvar no arquivo
+                            }
+                        }
+
                         Console.Clear();
                         break;
 
@@ -166,8 +182,13 @@ namespace Library
                               "5 - Relatório de Empréstimos e Devoluções\n" +
                               "0 - Finalizar o Programa\n");
         }
-        static bool ClienteCadastrado(string cpf)
+        static bool ClienteCadastrado()
         {
+            Console.Write("Digite o CPF do cliente: ");
+            string cpf = Console.ReadLine();
+
+            //verifica o cpf
+
             return false;
         }
         static Cliente CadastroCliente()
@@ -245,6 +266,30 @@ namespace Library
         {
             return false;
         }
+        static bool LivroCadastrado()
+        {
+            string nTombo;
+            long numeroTombo;
+            bool funcionar = false;
+            do
+            {
+                Console.Write("Digite o numero do tombo: ");
+                nTombo = Console.ReadLine();
+
+                if (!long.TryParse(nTombo, out numeroTombo))
+                {
+                    Console.WriteLine("Digite um número inteiro !");
+                }
+                else
+                {
+                    funcionar = true;
+                }
+            } while (!funcionar);
+
+            //Verifica Livro
+
+            return false;
+        }
         static Livro CadastroLivro()
         {
             string titulo;
@@ -287,6 +332,36 @@ namespace Library
             };
 
             return livro;
+        }
+        static EmprestimoLivro EmprestimoCadastrado()
+        {
+            DateTime dataDevolucao;
+            bool dataCorreta = false;
+            
+
+            do
+            {
+                Console.Write("Digite a data de publicação do livro (dd/mm/aaaa): ");
+                string dDevolucao = Console.ReadLine();
+
+                if (!DateTime.TryParseExact(dDevolucao, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDevolucao))
+                {
+                    Console.WriteLine("Digite novamente a data no formato dd/mm/aaaa");
+                }
+                else
+                {
+                    dataCorreta = true;
+                }
+            } while (!dataCorreta);
+
+            EmprestimoLivro emprestimo = new EmprestimoLivro
+            {
+                DataEmprestimo = DateTime.Now,
+                DataDevolucao = dataDevolucao,
+                StatusEmprestimo = 1
+            };
+
+            return emprestimo;
         }
     }
 }
