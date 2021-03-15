@@ -82,7 +82,7 @@ namespace Library
                         else
                         {
                             cliente = CadastroCliente(cpf);
-                            cliente.IdCliente = 3;
+                            cliente.IdCliente = 3; // criar função para gerar ID
                             cliente.endereco = CadastroEndereco();
 
                             clientes.Add(cliente);
@@ -112,11 +112,13 @@ namespace Library
                         }
                         else
                         {
-                            livros.Add(CadastroLivro());
+                            long numeroTombo = 3; //criar função para gerar numeroTombo
+                            Livro livro = CadastroLivro(numeroTombo, isbn);
+                            arquivoLivro.Salvar(livro);
+                            livros.Add(livro);
 
                             Console.Clear();
                             Console.Write("Livro cadastrado...\n\n");
-                            //salvar o arquivo
                         }
                         break;
 
@@ -373,7 +375,7 @@ namespace Library
 
             return false;
         }
-        static Livro CadastroLivro()
+        static Livro CadastroLivro(long numeroTombo , string isbn)
         {
             string titulo;
             string genero;
@@ -408,6 +410,8 @@ namespace Library
 
             Livro livro = new Livro
             {
+                NumeroTombo = numeroTombo,
+                ISBN = isbn,
                 Titulo = titulo,
                 Genero = genero,
                 DataPublicao = dataPublicacao,

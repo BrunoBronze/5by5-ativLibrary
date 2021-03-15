@@ -60,7 +60,6 @@ namespace Controller
         }
         public void Salvar(Cliente cliente)
         {
-            List<string> lines = base.Leitura(fileName);
             StringBuilder sb = new StringBuilder();
             sb.Append($"{cliente.IdCliente};");
             sb.Append($"{cliente.CPF};");
@@ -72,8 +71,6 @@ namespace Controller
             sb.Append($"{cliente.endereco.Cidade};");
             sb.Append($"{cliente.endereco.Estado};");
             sb.Append($"{cliente.endereco.CEP}");
-
-            lines.Add(sb.ToString());
 
             using (StreamWriter sw = new StreamWriter(filePath, true))
             {

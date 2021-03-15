@@ -53,7 +53,6 @@ namespace Controller
         }
         public void Salvar(EmprestimoLivro emprestimo)
         {
-            List<string> lines = base.Leitura(fileName);
             StringBuilder sb = new StringBuilder();
             sb.Append($"{emprestimo.IdCliente};");
             sb.Append($"{emprestimo.NumeroTombo};");
@@ -61,7 +60,7 @@ namespace Controller
             sb.Append($"{emprestimo.DataDevolucao:dd/MM/yyyy};");
             sb.Append($"{emprestimo.StatusEmprestimo}");
 
-            using (StreamWriter sw = new StreamWriter(filePath))
+            using (StreamWriter sw = new StreamWriter(filePath, true))
             {
                 sw.WriteLine(sb.ToString());
             }

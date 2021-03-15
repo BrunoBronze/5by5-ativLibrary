@@ -53,7 +53,6 @@ namespace Controller
         }
         public void Salvar(Livro livro)
         {
-            List<string> lines = base.Leitura(fileName);
             StringBuilder sb = new StringBuilder();
             sb.Append($"{livro.NumeroTombo};");
             sb.Append($"{livro.ISBN};");
@@ -62,7 +61,7 @@ namespace Controller
             sb.Append($"{livro.DataPublicao:dd/MM/yyyy};");
             sb.Append($"{livro.Autor}");
 
-            using (StreamWriter sw = new StreamWriter(filePath))
+            using (StreamWriter sw = new StreamWriter(filePath, true))
             {
                 sw.WriteLine(sb.ToString());
             }
