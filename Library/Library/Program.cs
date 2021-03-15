@@ -59,6 +59,7 @@ namespace Library
                 Console.Write(">>> ");
                 op = Console.ReadLine();
                 string cpf;
+                long numeroTombo;
                 switch (op)
                 {
                     
@@ -112,7 +113,7 @@ namespace Library
                         }
                         else
                         {
-                            long numeroTombo = 3; //criar função para gerar numeroTombo
+                            numeroTombo = 3L; //criar função para gerar numeroTombo
                             Livro livro = CadastroLivro(numeroTombo, isbn);
                             arquivoLivro.Salvar(livro);
                             livros.Add(livro);
@@ -129,6 +130,23 @@ namespace Library
 
                         //Empréstimo de Livro
 
+                        string nTombo;
+                        bool funcionar = false;
+                        do
+                        {
+                            Console.Write("Digite o numero do tombo: ");
+                            nTombo = Console.ReadLine();
+
+                            if (!long.TryParse(nTombo, out numeroTombo))
+                            {
+                                Console.WriteLine("Digite um número inteiro !");
+                            }
+                            else
+                            {
+                                funcionar = true;
+                            }
+                        } while (!funcionar);
+
                         if (!LivroCadastrado())
                         {
                             Console.WriteLine("Livro não disponível");
@@ -143,12 +161,17 @@ namespace Library
                             }
                             else
                             {
-                                emprestimos.Add(EmprestimoCadastrado());
-                                //salvar no arquivo
+                                long idCliente = ProcuraId(cpf);
+                                EmprestimoLivro emprestimo = EmprestimoCadastrado(numeroTombo, idCliente);
+                                arquivoEmprestimo.Salvar(emprestimo);
+                                emprestimos.Add(emprestimo);
+
+                                Console.Clear();
+                                Console.Write("Emprestimo cadastrado...\n\n");
                             }
                         }
 
-                        Console.Clear();
+                        
                         break;
 
                     #endregion
@@ -274,7 +297,13 @@ namespace Library
         {
             //verifica o cpf
 
-            return false;
+            return true;
+        }
+        static long ProcuraId(string cpf)
+        {
+            //verifica o cpf
+
+            return 3L;
         }
         static Cliente CadastroCliente(string cpf)
         {
@@ -353,27 +382,11 @@ namespace Library
         }
         static bool LivroCadastrado()
         {
-            string nTombo;
-            long numeroTombo;
-            bool funcionar = false;
-            do
-            {
-                Console.Write("Digite o numero do tombo: ");
-                nTombo = Console.ReadLine();
-
-                if (!long.TryParse(nTombo, out numeroTombo))
-                {
-                    Console.WriteLine("Digite um número inteiro !");
-                }
-                else
-                {
-                    funcionar = true;
-                }
-            } while (!funcionar);
+            
 
             //Verifica Livro
 
-            return false;
+            return true;
         }
         static Livro CadastroLivro(long numeroTombo , string isbn)
         {
@@ -420,14 +433,14 @@ namespace Library
 
             return livro;
         }
-        static EmprestimoLivro EmprestimoCadastrado()
+        static EmprestimoLivro EmprestimoCadastrado(long numeroTombo, long idCliente)
         {
             DateTime dataDevolucao;
             bool dataCorreta = false;
 
             do
             {
-                Console.Write("Digite a data de publicação do livro (dd/mm/aaaa): ");
+                Console.Write("Digite a data de devolução do livro (dd/mm/aaaa): ");
                 string dDevolucao = Console.ReadLine();
 
                 if (!DateTime.TryParseExact(dDevolucao, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDevolucao))
@@ -442,6 +455,8 @@ namespace Library
 
             EmprestimoLivro emprestimo = new EmprestimoLivro
             {
+                NumeroTombo = numeroTombo,
+                IdCliente = idCliente,
                 DataEmprestimo = DateTime.Now,
                 DataDevolucao = dataDevolucao,
                 StatusEmprestimo = 1
