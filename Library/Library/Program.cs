@@ -27,9 +27,18 @@ namespace Library
 
             if (!ArquivoCSV.CriarDiretorio())
             {
-                clientes = arquivoCliente.Leitura();
-                livros = arquivoLivro.Leitura();
-                emprestimos = arquivoEmprestimo.Leitura();
+                if (!arquivoCliente.CriarArquivo())
+                {
+                    clientes = arquivoCliente.Leitura();
+                }
+                if (!arquivoLivro.CriarArquivo())
+                {
+                    livros = arquivoLivro.Leitura();
+                }
+                if (!arquivoEmprestimo.CriarArquivo())
+                {
+                    emprestimos = arquivoEmprestimo.Leitura();
+                }
             }
             else
             {
@@ -49,8 +58,10 @@ namespace Library
                 Menu();
                 Console.Write(">>> ");
                 op = Console.ReadLine();
+                string cpf;
                 switch (op)
                 {
+                    
 
                     case "1":
                         #region Cadastro Cliente
@@ -59,7 +70,10 @@ namespace Library
                         Console.Clear();
                         Cliente cliente = new Cliente();
 
-                        if (ClienteCadastrado())
+                        Console.Write("Digite o CPF do cliente: ");
+                        cpf = Console.ReadLine();
+
+                        if (ClienteCadastrado(cpf))
                         {
                             //trazendo informações do cliente
                             Console.WriteLine("Cliente já cadastrado!");
@@ -67,14 +81,15 @@ namespace Library
                         }
                         else
                         {
-                            cliente = CadastroCliente();
+                            cliente = CadastroCliente(cpf);
+                            cliente.IdCliente = 3;
                             cliente.endereco = CadastroEndereco();
 
                             clientes.Add(cliente);
+                            arquivoCliente.Salvar(cliente);
+
                             Console.Clear();
                             Console.Write("Cliente cadastrado...\n\n");
-                            //salvar arquivo
-                            arquivoCliente.Leitura();
                         }
 
                         break;
@@ -118,7 +133,9 @@ namespace Library
                         }
                         else
                         {
-                            if (!ClienteCadastrado())
+                            Console.Write("Digite o CPF do cliente: ");
+                            cpf = Console.ReadLine();
+                            if (!ClienteCadastrado(cpf))
                             {
                                 Console.WriteLine("Cliente não cadastrado");
                             }
@@ -251,16 +268,13 @@ namespace Library
                               "5 - Relatório de Empréstimos e Devoluções\n" +
                               "0 - Finalizar o Programa\n");
         }
-        static bool ClienteCadastrado()
+        static bool ClienteCadastrado(string cpf)
         {
-            Console.Write("Digite o CPF do cliente: ");
-            string cpf = Console.ReadLine();
-
             //verifica o cpf
 
             return false;
         }
-        static Cliente CadastroCliente()
+        static Cliente CadastroCliente(string cpf)
         {
 
             string nome;
@@ -271,7 +285,6 @@ namespace Library
             Console.WriteLine("\n>>> Cadastro do cliente <<<");
             Console.Write("Digite o nome do cliente: ");
             nome = Console.ReadLine();
-
 
             do
             {
@@ -293,6 +306,7 @@ namespace Library
 
             Cliente cliente = new Cliente
             {
+                CPF = cpf,
                 Nome = nome,
                 DataNascimento = dataNascimento,
                 Telefone = telefone
@@ -304,7 +318,7 @@ namespace Library
         {
 
 
-            Console.WriteLine(">> Cadastro do endereço <<");
+            Console.WriteLine("\n>> Cadastro do endereço <<");
             Console.Write("Digite o logradouro do cliente: ");
             string logradouro = Console.ReadLine();
 

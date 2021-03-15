@@ -35,6 +35,8 @@ namespace Model
             }
 
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"Id do cliente: {IdCliente}");
+            sb.AppendLine($"Numero do tombo: {NumeroTombo}");
             sb.AppendLine($"Data de emprestimo: {DataEmprestimo:dd/MM/yyyy}");
             sb.AppendLine($"Data de devolucao: {DataDevolucao:dd/MM/yyyy}");
             sb.AppendLine($"Status de Emprestimo: {status}");

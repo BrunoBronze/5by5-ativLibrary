@@ -12,18 +12,23 @@ namespace Controller
     public class ArquivoCliente : ArquivoCSV
     {
         public static string fileName = @"\CLIENTE.csv";
-       
-        public void CriarArquivo()
+        private string filePath = $@"{DirectoryPath}\{fileName}";
+
+        public bool CriarArquivo()
         {
-            string filePath = $@"{DirectoryPath}\{fileName}";
+            bool criou = false;
             if (!File.Exists(filePath))
             {
-                File.Create(filePath);
+                FileStream file = File.Create(filePath);
+                file.Close();
+
                 using (StreamWriter sw = new StreamWriter(filePath))
                 {
                     sw.WriteLine("IdCliente;CPF;Nome;DataNascimento;Telefone;Logradouro;Bairro;Cidade;Estado;CEP");
+                    criou = true;
                 }
             }
+            return criou;
         }
 
         public List<Cliente> Leitura()
@@ -52,6 +57,28 @@ namespace Controller
                 clientes.Add(clienteLine);
             }
             return clientes;
+        }
+        public void Salvar(Cliente cliente)
+        {
+            List<string> lines = base.Leitura(fileName);
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{cliente.IdCliente};");
+            sb.Append($"{cliente.CPF};");
+            sb.Append($"{cliente.Nome};");
+            sb.Append($"{cliente.DataNascimento:dd/MM/yyyy};");
+            sb.Append($"{cliente.Telefone};");
+            sb.Append($"{cliente.endereco.Logradouro};");
+            sb.Append($"{cliente.endereco.Bairro};");
+            sb.Append($"{cliente.endereco.Cidade};");
+            sb.Append($"{cliente.endereco.Estado};");
+            sb.Append($"{cliente.endereco.CEP}");
+
+            lines.Add(sb.ToString());
+
+            using (StreamWriter sw = new StreamWriter(filePath, true))
+            {
+                sw.WriteLine(sb.ToString());
+            }
         }
     }
 }

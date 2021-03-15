@@ -12,20 +12,23 @@ namespace Controller
     public class ArquivoLivro : ArquivoCSV
     {
         public static string fileName = @"\LIVRO.csv";
+        string filePath = $@"{DirectoryPath}\{fileName}";
 
-        public void CriarArquivo()
+        public bool CriarArquivo()
         {
-            string filePath = $@"{DirectoryPath}\{fileName}";
+            bool criou = false;
             if (!File.Exists(filePath))
             {
-                File.Create(filePath);
+                FileStream file = File.Create(filePath);
+                file.Close();
                 using (StreamWriter sw = new StreamWriter(filePath))
                 {
                     sw.WriteLine("NumeroTombo;ISBN;Titulo;Genero;DataPublicacao;Autor");
+                    criou = true;
                 }
             }
+            return criou;
         }
-
         public List<Livro> Leitura()
         {
             List<string> lines = base.Leitura(fileName);
@@ -47,6 +50,22 @@ namespace Controller
                 livros.Add(livroLine);
             }
             return livros;
+        }
+        public void Salvar(Livro livro)
+        {
+            List<string> lines = base.Leitura(fileName);
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{livro.NumeroTombo};");
+            sb.Append($"{livro.ISBN};");
+            sb.Append($"{livro.Titulo};");
+            sb.Append($"{livro.Genero};");
+            sb.Append($"{livro.DataPublicao:dd/MM/yyyy};");
+            sb.Append($"{livro.Autor}");
+
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                sw.WriteLine(sb.ToString());
+            }
         }
     }
 }

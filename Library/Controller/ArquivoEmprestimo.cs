@@ -11,21 +11,24 @@ namespace Controller
 {
     public class ArquivoEmprestimo : ArquivoCSV
     {
-        public string fileName = @"\EMPRESTIMO.csv";
+        public static string fileName = @"\EMPRESTIMO.csv";
+        string filePath = $@"{DirectoryPath}\{fileName}";
 
-        public void CriarArquivo()
+        public bool CriarArquivo()
         {
-            string filePath = $@"{DirectoryPath}\{fileName}";
+            bool criou = false;
             if (!File.Exists(filePath))
             {
-                File.Create(filePath);
+                FileStream file = File.Create(filePath);
+                file.Close();
                 using (StreamWriter sw = new StreamWriter(filePath))
                 {
                     sw.WriteLine("IdCliente;NumeroTombo;DataEmprestimo;DataDevolucao;StatusEmprestimo");
+                    criou = true;
                 }
             }
+            return criou;
         }
-
         public List<EmprestimoLivro> Leitura()
         {
             List<string> lines = base.Leitura(fileName);
@@ -47,6 +50,21 @@ namespace Controller
                 emprestimos.Add(emprestimoLine);
             }
             return emprestimos;
+        }
+        public void Salvar(EmprestimoLivro emprestimo)
+        {
+            List<string> lines = base.Leitura(fileName);
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{emprestimo.IdCliente};");
+            sb.Append($"{emprestimo.NumeroTombo};");
+            sb.Append($"{emprestimo.DataEmprestimo:dd/MM/yyyy};");
+            sb.Append($"{emprestimo.DataDevolucao:dd/MM/yyyy};");
+            sb.Append($"{emprestimo.StatusEmprestimo}");
+
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                sw.WriteLine(sb.ToString());
+            }
         }
     }
 }
