@@ -77,5 +77,16 @@ namespace Controller
                 sw.WriteLine(sb.ToString());
             }
         }
+        public long GerarID(List<Cliente> clientes)
+        {
+            if (clientes.Count > 0)
+            {
+                List<string> lines = base.Leitura(fileName);
+                string line = lines[lines.Count - 1];
+                string[] clientecsv = line.Split(';');
+                return (long.Parse(clientecsv[0]) + 1);
+            }
+            return 1;
+        }
     }
 }

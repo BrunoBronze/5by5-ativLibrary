@@ -13,11 +13,11 @@ namespace Model
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Logradouro : {Logradouro}");
+            sb.AppendLine($"\nLogradouro : {Logradouro}");
             sb.AppendLine($"Bairro : {Bairro}");
             sb.AppendLine($"Cidade : {Cidade}");
             sb.AppendLine($"Estado : {Estado}");
-            sb.AppendLine($"CEP : {CEP}");
+            sb.Append($"CEP : {CEP}");
 
             return sb.ToString();
         }

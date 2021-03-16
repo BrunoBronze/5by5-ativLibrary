@@ -62,30 +62,38 @@ namespace Library
                 long numeroTombo;
                 string nTombo;
                 bool funcionar;
+
                 switch (op)
                 {
-
-
                     case "1":
                         #region Cadastro Cliente
 
                         //Cadastro do Cliente
+
                         Console.Clear();
+                        Console.WriteLine(">>> Cadastro de clientes <<<");
+
                         Cliente cliente = new Cliente();
 
                         Console.Write("Digite o CPF do cliente: ");
                         cpf = Console.ReadLine();
 
-                        if (ClienteCadastrado(cpf))
+                        cliente = clientes.Find(c => c.CPF == cpf);
+
+                        if (cliente != null)
                         {
                             //trazendo informações do cliente
-                            Console.WriteLine("Cliente já cadastrado!");
-                            Console.WriteLine("Trazer informações do cliente");
+                            Console.WriteLine("\nCliente já cadastrado!");
+                            Console.WriteLine(cliente);
+
+                            Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
+                            Console.ReadKey();
+                            Console.Clear();
                         }
                         else
                         {
                             cliente = CadastroCliente(cpf);
-                            cliente.IdCliente = 3; // criar função para gerar ID
+                            cliente.IdCliente = arquivoCliente.GerarID(clientes); // criar função para gerar ID
                             cliente.endereco = CadastroEndereco();
 
                             clientes.Add(cliente);
@@ -103,6 +111,9 @@ namespace Library
                         #region Cadastro do livro
 
                         //Cadastro do livro
+
+                        Console.Clear();
+                        Console.WriteLine(">>> Cadastro de livros <<<");
 
                         Console.Write("\nDigite o ISBN do livro: ");
                         string isbn = Console.ReadLine();
@@ -131,7 +142,8 @@ namespace Library
                         #region Empréstimo de Livro
 
                         //Empréstimo de Livro
-
+                        Console.Clear();
+                        Console.WriteLine(">>> Empréstimo de livros <<<");
 
                         funcionar = false;
                         do
@@ -184,6 +196,7 @@ namespace Library
                         //Devolução do Livro
 
                         Console.Clear();
+                        Console.WriteLine(">>> Devolução de livros <<<");
 
                         funcionar = false;
                         do
@@ -575,13 +588,6 @@ namespace Library
             };
 
             return emprestimo;
-        }
-        static bool EmprestimoCadastrado(long numeroTombo) //apenas para exemplificar outro metodo
-        {
-
-            //Verifica Livro
-
-            return false;
         }
     }
 }
