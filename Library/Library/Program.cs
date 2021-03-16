@@ -247,7 +247,7 @@ namespace Library
 
                         if (index == -1) //ProcuraNumeroTombo retorna -1 caso não encontre o index
                         {
-                            Console.WriteLine("Livro não encontrado para devolução\n");
+                            Console.WriteLine("\nLivro não encontrado para devolução");
                         }
                         else
                         {
@@ -265,7 +265,7 @@ namespace Library
                                         emprestimos.ElementAt(index).StatusEmprestimo = 2;
                                         arquivoEmprestimo.Devolucao(index);
                                         //alterar situação
-                                        Console.WriteLine("\nSituação alterada para \"Devolvido\"...\n");
+                                        Console.WriteLine("\nSituação alterada para \"Devolvido\"...");
                                     }
                                     else if (resposta != "n")
                                     {
@@ -273,7 +273,7 @@ namespace Library
                                     }
                                     else
                                     {
-                                        Console.WriteLine();//apenas para pular uma linha
+                                        Console.WriteLine("\nSituação não foi alterada...");
                                     }
                                 } while (resposta != "s" && resposta != "n");
                             }
@@ -284,11 +284,15 @@ namespace Library
                                 emprestimos.ElementAt(index).StatusEmprestimo = 2;
                                 arquivoEmprestimo.Devolucao(index);
                                 //alterar situação
-                                Console.WriteLine("salvando situação para \"Devolvido\"...\n");
+                                Console.WriteLine("salvando situação para \"Devolvido\"...");
                             }
 
                             //Alterar para devolvido (2) no arquivoEmprestimo
                         }
+
+                        Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
+                        Console.ReadKey();
+                        Console.Clear();
 
                         break;
 
