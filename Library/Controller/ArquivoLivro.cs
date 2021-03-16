@@ -66,5 +66,16 @@ namespace Controller
                 sw.WriteLine(sb.ToString());
             }
         }
+        public long GerarTombo(List<Livro> livros)
+        {
+            if (livros.Count > 0)
+            {
+                List<string> lines = base.Leitura(fileName);
+                string line = lines[lines.Count - 1];
+                string[] clientecsv = line.Split(';');
+                return (long.Parse(clientecsv[0]) + 1);
+            }
+            return 1;
+        }
     }
 }

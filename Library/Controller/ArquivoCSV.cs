@@ -21,7 +21,6 @@ namespace Controller
             }
             return criou;
         }
-
         public virtual List<string> Leitura(string fileName)
         {
             List<string> lines = new List<string>();

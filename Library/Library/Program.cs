@@ -93,7 +93,7 @@ namespace Library
                         else
                         {
                             cliente = CadastroCliente(cpf);
-                            cliente.IdCliente = arquivoCliente.GerarID(clientes); // criar função para gerar ID
+                            cliente.IdCliente = arquivoCliente.GerarID(clientes);
                             cliente.endereco = CadastroEndereco();
 
                             clientes.Add(cliente);
@@ -118,21 +118,29 @@ namespace Library
                         Console.Write("\nDigite o ISBN do livro: ");
                         string isbn = Console.ReadLine();
 
-                        if (LivroCadastrado(isbn))
+                        Livro livro = livros.Find(l => l.ISBN == isbn);
+
+                        if (livro != null) // se estiver cadastrado
                         {
-                            //trazendo informações do livro
-                            Console.WriteLine("Livro já cadastrado!");
-                            Console.WriteLine("Trazer informações do livro");
+                            Console.WriteLine("\nLivro já cadastrado!");
+                            Console.WriteLine(livro);
+                            Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
+                            Console.ReadKey();
+                            Console.Clear();
                         }
-                        else
+                        else //se não estiver cadastrado
                         {
-                            numeroTombo = 3L; //criar função para gerar numeroTombo
-                            Livro livro = CadastroLivro(numeroTombo, isbn);
+                            numeroTombo = arquivoLivro.GerarTombo(livros);
+                            livro = CadastroLivro(numeroTombo, isbn);
                             arquivoLivro.Salvar(livro);
                             livros.Add(livro);
 
+                            
+                            Console.WriteLine("\nLivro cadastrado...");
+                            Console.WriteLine($"O numero do tombo é: {numeroTombo}");
+                            Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
+                            Console.ReadKey();
                             Console.Clear();
-                            Console.Write("Livro cadastrado...\n\n");
                         }
                         break;
 
@@ -169,14 +177,14 @@ namespace Library
                         {
                             Console.Write("Digite o CPF do cliente: ");
                             cpf = Console.ReadLine();
-                            if (!ClienteCadastrado(cpf))
+                            cliente = clientes.Find(c => c.CPF == cpf);
+                            if (cliente == null)
                             {
                                 Console.WriteLine("Cliente não cadastrado");
                             }
                             else
                             {
-                                long idCliente = ProcuraId(cpf);
-                                EmprestimoLivro emprestimo = EmprestimoCadastrado(numeroTombo, idCliente);
+                                EmprestimoLivro emprestimo = EmprestimoCadastrado(numeroTombo, cliente.IdCliente);
                                 arquivoEmprestimo.Salvar(emprestimo);
                                 emprestimos.Add(emprestimo);
 
@@ -418,18 +426,6 @@ namespace Library
                               "5 - Relatório de Empréstimos e Devoluções\n" +
                               "0 - Finalizar o Programa\n");
         }
-        static bool ClienteCadastrado(string cpf)
-        {
-            //verifica o cpf
-
-            return true;
-        }
-        static long ProcuraId(string cpf)
-        {
-            //verifica o cpf
-
-            return 3L;
-        }
         static Cliente CadastroCliente(string cpf)
         {
 
@@ -500,10 +496,6 @@ namespace Library
             };
 
             return endereco;
-        }
-        static bool LivroCadastrado(string isbn)
-        {
-            return false;
         }
         static bool LivroCadastrado()
         {
