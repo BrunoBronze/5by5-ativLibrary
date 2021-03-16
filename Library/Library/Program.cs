@@ -63,6 +63,10 @@ namespace Library
                 string nTombo;
                 bool funcionar;
 
+                Livro livro = new Livro();
+                Cliente cliente = new Cliente(); ;
+                EmprestimoLivro emprestimo = new EmprestimoLivro(); ;
+
                 switch (op)
                 {
                     case "1":
@@ -73,7 +77,7 @@ namespace Library
                         Console.Clear();
                         Console.WriteLine(">>> Cadastro de clientes <<<");
 
-                        Cliente cliente = new Cliente();
+                        cliente = new Cliente();
 
                         Console.Write("Digite o CPF do cliente: ");
                         cpf = Console.ReadLine();
@@ -118,7 +122,7 @@ namespace Library
                         Console.Write("\nDigite o ISBN do livro: ");
                         string isbn = Console.ReadLine();
 
-                        Livro livro = livros.Find(l => l.ISBN == isbn);
+                        livro = livros.Find(l => l.ISBN == isbn);
 
                         if (livro != null) // se estiver cadastrado
                         {
@@ -135,7 +139,7 @@ namespace Library
                             arquivoLivro.Salvar(livro);
                             livros.Add(livro);
 
-                            
+
                             Console.WriteLine("\nLivro cadastrado...");
                             Console.WriteLine($"O numero do tombo é: {numeroTombo}");
                             Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
@@ -152,47 +156,64 @@ namespace Library
                         //Empréstimo de Livro
                         Console.Clear();
                         Console.WriteLine(">>> Empréstimo de livros <<<");
-
-                        funcionar = false;
                         do
                         {
-                            Console.Write("Digite o numero do tombo: ");
-                            nTombo = Console.ReadLine();
-
-                            if (!long.TryParse(nTombo, out numeroTombo))
+                            funcionar = false;
+                            do
                             {
-                                Console.WriteLine("Digite um número inteiro !");
+                                Console.Write("Digite o numero do tombo: ");
+                                nTombo = Console.ReadLine();
+
+                                if (!long.TryParse(nTombo, out numeroTombo))
+                                {
+                                    Console.WriteLine("Digite um número inteiro !\n");
+                                }
+                                else
+                                {
+                                    funcionar = true;
+                                }
+                            } while (!funcionar);
+
+                            livro = livros.Find(l => l.NumeroTombo == numeroTombo);
+
+                            if (livro == null)
+                            {
+                                Console.WriteLine("\nLivro indisponível para empréstimo");
+                                Console.WriteLine("Deseja tentar novamente? ");
+
+                                op = Confirmacao();
+                                
                             }
                             else
                             {
-                                funcionar = true;
-                            }
-                        } while (!funcionar);
+                                do
+                                {
+                                    Console.Write("Digite o CPF do cliente: ");
+                                    cpf = Console.ReadLine();
+                                    cliente = clientes.Find(c => c.CPF == cpf);
+                                    if (cliente == null)
+                                    {
+                                        Console.WriteLine("\nCliente não cadastrado");
+                                        Console.WriteLine("Deseja tentar novamente? ");
+                                        
+                                        op = Confirmacao();
+                                    }
+                                    else
+                                    {
+                                        emprestimo = EmprestimoCadastrado(numeroTombo, cliente.IdCliente);
+                                        arquivoEmprestimo.Salvar(emprestimo);
+                                        emprestimos.Add(emprestimo);
 
-                        if (!LivroCadastrado())
-                        {
-                            Console.WriteLine("Livro não disponível");
-                        }
-                        else
-                        {
-                            Console.Write("Digite o CPF do cliente: ");
-                            cpf = Console.ReadLine();
-                            cliente = clientes.Find(c => c.CPF == cpf);
-                            if (cliente == null)
-                            {
-                                Console.WriteLine("Cliente não cadastrado");
+                                        Console.WriteLine("Emprestimo cadastrado...");
+                                        op = "sair"; // condição para sair do laço
+                                    }
+                                } while (op != "sair");
                             }
-                            else
-                            {
-                                EmprestimoLivro emprestimo = EmprestimoCadastrado(numeroTombo, cliente.IdCliente);
-                                arquivoEmprestimo.Salvar(emprestimo);
-                                emprestimos.Add(emprestimo);
+                        } while (op != "sair");
 
-                                Console.Clear();
-                                Console.Write("Emprestimo cadastrado...\n\n");
-                            }
-                        }
-
+                        Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
+                        Console.ReadKey();
+                        Console.Clear();
 
                         break;
 
@@ -339,7 +360,7 @@ namespace Library
                                         {
                                             j = 0;
                                         }
-                                        
+
                                         break;
 
                                     case "4":
@@ -352,7 +373,7 @@ namespace Library
                                         {
                                             j = emprestimos.Count - 1;
                                         }
-                                        
+
                                         break;
 
                                     case "5":
@@ -382,22 +403,15 @@ namespace Library
                             Console.Write(">>> ");
                             op = Console.ReadLine().ToLower();
 
-                            if (op == "s")
+                            op = Confirmacao();
+
+                            if (op == "sair")
                             {
                                 op = "0";
                                 Console.Write("\nObrigado por usar o sistema Livraria 5by5\n");
                             }
-                            else if ((op == "n"))
-                            {
-                                Console.Write("\nPressione enter para voltar ao menu");
-                                Console.ReadKey();
-                                Console.Clear();
-                            }
-                            else
-                            {
-                                Console.WriteLine("Digito inválido");
-                            }
-                        } while (op != "0" && op != "n");
+                            
+                        } while (op != "0");
 
                         break;
 
@@ -497,14 +511,6 @@ namespace Library
 
             return endereco;
         }
-        static bool LivroCadastrado()
-        {
-
-
-            //Verifica Livro
-
-            return true;
-        }
         static Livro CadastroLivro(long numeroTombo, string isbn)
         {
             string titulo;
@@ -580,6 +586,30 @@ namespace Library
             };
 
             return emprestimo;
+        }
+        static string Confirmacao()
+        {
+            string op;
+            do
+            {
+                Console.WriteLine("Digite \"s\" pra sim ou \"n\" para não\n");
+                Console.Write(">>> ");
+                op = Console.ReadLine().ToLower();
+                if (op == "s")
+                {
+                    op = "tentar";
+                    Console.Clear();
+                }
+                else if ((op == "n"))
+                {
+                    op = "sair";
+                }
+                else
+                {
+                    Console.WriteLine("Digito inválido");
+                }
+            } while (op != "sair" && op != "tentar");
+            return op;
         }
     }
 }
