@@ -89,23 +89,27 @@ namespace Library
                             //trazendo informações do cliente
                             Console.WriteLine("\nCliente já cadastrado!");
                             Console.WriteLine(cliente);
-
-                            Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
-                            Console.ReadKey();
-                            Console.Clear();
                         }
                         else
                         {
                             cliente = CadastroCliente(cpf);
-                            cliente.IdCliente = arquivoCliente.GerarID(clientes);
                             cliente.endereco = CadastroEndereco();
-
-                            clientes.Add(cliente);
+                            if (!(clientes.Count > 0))
+                            {
+                                cliente.IdCliente = 1;
+                            }
+                            else
+                            {
+                                cliente.IdCliente = clientes.Last().IdCliente + 1;
+                            }
                             arquivoCliente.Salvar(cliente);
+                            clientes.Add(cliente);
 
-                            Console.Clear();
-                            Console.Write("Cliente cadastrado...\n\n");
+                            Console.WriteLine("Cliente cadastrado...");
                         }
+                        Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
+                        Console.ReadKey();
+                        Console.Clear();
 
                         break;
 
@@ -134,7 +138,15 @@ namespace Library
                         }
                         else //se não estiver cadastrado
                         {
-                            numeroTombo = arquivoLivro.GerarTombo(livros);
+                            if (!(livros.Count > 0))
+                            {
+                                numeroTombo = 1;
+                            }
+                            else
+                            {
+                                numeroTombo = livros.Last().NumeroTombo + 1;
+                            }
+                            
                             livro = CadastroLivro(numeroTombo, isbn);
                             arquivoLivro.Salvar(livro);
                             livros.Add(livro);
@@ -156,60 +168,67 @@ namespace Library
                         //Empréstimo de Livro
                         Console.Clear();
                         Console.WriteLine(">>> Empréstimo de livros <<<");
-                        do
+                        if (!(livros.Count > 0))
                         {
-                            funcionar = false;
+                            Console.WriteLine("\nNenhum livro cadastrado");
+                        }
+                        else
+                        {
                             do
                             {
-                                Console.Write("Digite o numero do tombo: ");
-                                nTombo = Console.ReadLine();
-
-                                if (!long.TryParse(nTombo, out numeroTombo))
-                                {
-                                    Console.WriteLine("Digite um número inteiro !\n");
-                                }
-                                else
-                                {
-                                    funcionar = true;
-                                }
-                            } while (!funcionar);
-
-                            livro = livros.Find(l => l.NumeroTombo == numeroTombo);
-
-                            if (livro == null)
-                            {
-                                Console.WriteLine("\nLivro indisponível para empréstimo");
-                                Console.WriteLine("Deseja tentar novamente? ");
-
-                                op = Confirmacao();
-                                
-                            }
-                            else
-                            {
+                                funcionar = false;
                                 do
                                 {
-                                    Console.Write("Digite o CPF do cliente: ");
-                                    cpf = Console.ReadLine();
-                                    cliente = clientes.Find(c => c.CPF == cpf);
-                                    if (cliente == null)
+                                    Console.Write("Digite o numero do tombo: ");
+                                    nTombo = Console.ReadLine();
+
+                                    if (!long.TryParse(nTombo, out numeroTombo))
                                     {
-                                        Console.WriteLine("\nCliente não cadastrado");
-                                        Console.WriteLine("Deseja tentar novamente? ");
-                                        
-                                        op = Confirmacao();
+                                        Console.WriteLine("Digite um número inteiro !\n");
                                     }
                                     else
                                     {
-                                        emprestimo = EmprestimoCadastrado(numeroTombo, cliente.IdCliente);
-                                        arquivoEmprestimo.Salvar(emprestimo);
-                                        emprestimos.Add(emprestimo);
-
-                                        Console.WriteLine("Emprestimo cadastrado...");
-                                        op = "sair"; // condição para sair do laço
+                                        funcionar = true;
                                     }
-                                } while (op != "sair");
-                            }
-                        } while (op != "sair");
+                                } while (!funcionar);
+
+                                livro = livros.Find(l => l.NumeroTombo == numeroTombo);
+
+                                if (livro == null)
+                                {
+                                    Console.WriteLine("\nLivro indisponível para empréstimo");
+                                    Console.WriteLine("Deseja tentar novamente? ");
+
+                                    op = Confirmacao();
+
+                                }
+                                else
+                                {
+                                    do
+                                    {
+                                        Console.Write("Digite o CPF do cliente: ");
+                                        cpf = Console.ReadLine();
+                                        cliente = clientes.Find(c => c.CPF == cpf);
+                                        if (cliente == null)
+                                        {
+                                            Console.WriteLine("\nCliente não cadastrado");
+                                            Console.WriteLine("Deseja tentar novamente? ");
+
+                                            op = Confirmacao();
+                                        }
+                                        else
+                                        {
+                                            emprestimo = CadastradoEmprestimo(numeroTombo, cliente.IdCliente);
+                                            arquivoEmprestimo.Salvar(emprestimo);
+                                            emprestimos.Add(emprestimo);
+
+                                            Console.WriteLine("\nEmprestimo cadastrado...");
+                                            op = "sair"; // condição para sair do laço
+                                        }
+                                    } while (op != "sair");
+                                }
+                            } while (op != "sair");
+                        }
 
                         Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
                         Console.ReadKey();
@@ -227,67 +246,74 @@ namespace Library
                         Console.Clear();
                         Console.WriteLine(">>> Devolução de livros <<<");
 
-                        funcionar = false;
-                        do
+                        if (!(emprestimos.Count > 0))
                         {
-                            Console.Write("Digite o numero do tombo: ");
-                            nTombo = Console.ReadLine();
-
-                            if (!long.TryParse(nTombo, out numeroTombo))
-                            {
-                                Console.WriteLine("Digite um número inteiro !\n");
-                            }
-                            else
-                            {
-                                funcionar = true;
-                            }
-                        } while (!funcionar);
-
-                        int index = arquivoEmprestimo.ProcuraNumeroTombo(numeroTombo);
-
-                        if (index == -1) //ProcuraNumeroTombo retorna -1 caso não encontre o index
-                        {
-                            Console.WriteLine("\nLivro não encontrado para devolução");
+                            Console.WriteLine("\nNenhum livro cadastrado para emprestimo");
                         }
                         else
                         {
-                            double multa = EmprestimoLivro.CalculaMulta(emprestimos.ElementAt(index));
-                            if (multa > 0)
+                            funcionar = false;
+                            do
                             {
-                                Console.WriteLine($"\nMulta a ser paga: R$ {multa:F2}");
-                                string resposta;
-                                do
+                                Console.Write("Digite o numero do tombo: ");
+                                nTombo = Console.ReadLine();
+
+                                if (!long.TryParse(nTombo, out numeroTombo))
                                 {
-                                    Console.Write("A multa foi paga sim ou não(s/n)? ");
-                                    resposta = Console.ReadLine().ToLower();
-                                    if (resposta == "s")
-                                    {
-                                        emprestimos.ElementAt(index).StatusEmprestimo = 2;
-                                        arquivoEmprestimo.Devolucao(index);
-                                        //alterar situação
-                                        Console.WriteLine("\nSituação alterada para \"Devolvido\"...");
-                                    }
-                                    else if (resposta != "n")
-                                    {
-                                        Console.WriteLine("Digite \"s\" ou \"n\"");
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("\nSituação não foi alterada...");
-                                    }
-                                } while (resposta != "s" && resposta != "n");
+                                    Console.WriteLine("Digite um número inteiro !\n");
+                                }
+                                else
+                                {
+                                    funcionar = true;
+                                }
+                            } while (!funcionar);
+
+                            int index = arquivoEmprestimo.ProcuraNumeroTombo(numeroTombo);
+
+                            if (index == -1) //ProcuraNumeroTombo retorna -1 caso não encontre o index
+                            {
+                                Console.WriteLine("\nLivro não encontrado para devolução");
                             }
                             else
                             {
-                                Console.WriteLine("\nO prazo da devolução foi cumprido\n");
+                                double multa = EmprestimoLivro.CalculaMulta(emprestimos.ElementAt(index));
+                                if (multa > 0)
+                                {
+                                    Console.WriteLine($"\nMulta a ser paga: R$ {multa:F2}");
+                                    string resposta;
+                                    do
+                                    {
+                                        Console.Write("A multa foi paga sim ou não(s/n)? ");
+                                        resposta = Console.ReadLine().ToLower();
+                                        if (resposta == "s")
+                                        {
+                                            emprestimos.ElementAt(index).StatusEmprestimo = 2;
+                                            arquivoEmprestimo.Devolucao(index);
+                                            //alterar situação
+                                            Console.WriteLine("\nSituação alterada para \"Devolvido\"...");
+                                        }
+                                        else if (resposta != "n")
+                                        {
+                                            Console.WriteLine("Digite \"s\" ou \"n\"");
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("\nSituação não foi alterada...");
+                                        }
+                                    } while (resposta != "s" && resposta != "n");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("\nO prazo da devolução foi cumprido\n");
 
-                                emprestimos.ElementAt(index).StatusEmprestimo = 2;
-                                arquivoEmprestimo.Devolucao(index);
-                                //alterar situação
-                                Console.WriteLine("salvando situação para \"Devolvido\"...");
+                                    emprestimos.ElementAt(index).StatusEmprestimo = 2;
+                                    arquivoEmprestimo.Devolucao(index);
+                                    //alterar situação
+                                    Console.WriteLine("salvando situação para \"Devolvido\"...");
+                                }
+
+                                //Alterar para devolvido (2) no arquivoEmprestimo
                             }
-
-                            //Alterar para devolvido (2) no arquivoEmprestimo
                         }
 
                         Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
@@ -302,14 +328,13 @@ namespace Library
                         #region Relatório de Emprestimos e Devoluções
                         Console.Clear();
                         Console.WriteLine(">>> Relatório de Emprestimos e Devoluções <<<");
-                        string op1;
                         int j = 0;
                         do
                         {
                             if (emprestimos.Count == 0)
                             {
-                                Console.WriteLine("Nenhum emprestimo cadastrado!");
-                                op1 = "5";
+                                Console.WriteLine("\nNenhum emprestimo cadastrado!");
+                                j = -1;
                             }
                             else
                             {
@@ -317,81 +342,14 @@ namespace Library
 
                                 Console.Write("\n" + relatorio.Imprimir(clientes, livros, emprestimos[j]));
 
-                                Console.WriteLine("\nO que deseja fazer a seguir?\n" +
-                                                  "1 - Proximo\n" +
-                                                  "2 - Anterior\n" +
-                                                  "3 - Primeiro\n" +
-                                                  "4 - Ultimo\n" +
-                                                  "5 - Sair\n");
-                                Console.Write(">>> ");
-                                op1 = Console.ReadLine();
-
-                                switch (op1)
-                                {
-                                    case "1":
-                                        Console.Clear();
-                                        if (j == (emprestimos.Count - 1))
-                                        {
-                                            Console.WriteLine("Você esta no fim da lista de emprestimo");
-                                        }
-                                        else
-                                        {
-                                            j++;
-                                        }
-
-                                        break;
-
-                                    case "2":
-                                        Console.Clear();
-                                        if (j == 0)
-                                        {
-                                            Console.WriteLine("Você esta no inicio da lista de emprestimo");
-                                        }
-                                        else
-                                        {
-                                            j--;
-                                        }
-
-                                        break;
-
-                                    case "3":
-                                        Console.Clear();
-                                        if (j == 0)
-                                        {
-                                            Console.WriteLine("Você já está no inicio");
-                                        }
-                                        else
-                                        {
-                                            j = 0;
-                                        }
-
-                                        break;
-
-                                    case "4":
-                                        Console.Clear();
-                                        if (j == emprestimos.Count - 1)
-                                        {
-                                            Console.WriteLine("Você já está no fim");
-                                        }
-                                        else
-                                        {
-                                            j = emprestimos.Count - 1;
-                                        }
-
-                                        break;
-
-                                    case "5":
-                                        Console.Clear();
-                                        break;
-
-                                    default:
-                                        Console.Clear();
-                                        Console.WriteLine("Digite uma opção do menu");
-                                        break;
-                                }
+                                j = relatorio.Menu(emprestimos, j);
                             }
-                        } while (op1 != "5");
+                        } while (j != -1);
+
+                        Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
+                        Console.ReadKey();
                         Console.Clear();
+
                         break;
 
                     #endregion
@@ -400,6 +358,9 @@ namespace Library
                         #region Finalizar o Programa
 
                         //Finalizar o Programa
+
+                        Console.Clear();
+
                         do //Repita enquanto a resposta for diferente de sim ou não
                         {
                             Console.WriteLine("\nDeseja realmente sair?");
@@ -407,15 +368,22 @@ namespace Library
                             Console.Write(">>> ");
                             op = Console.ReadLine().ToLower();
 
-                            op = Confirmacao();
-
-                            if (op == "sair")
+                            if (op == "s")
                             {
                                 op = "0";
                                 Console.Write("\nObrigado por usar o sistema Livraria 5by5\n");
                             }
-                            
-                        } while (op != "0");
+                            else if ((op == "n"))
+                            {
+                                Console.Write("Pressione qualquer tecla para voltar ao menu principal...");
+                                Console.ReadKey();
+                                Console.Clear();
+                            }
+                            else
+                            {
+                                Console.WriteLine("Digito inválido");
+                            }
+                        } while (op != "0" && op != "n");
 
                         break;
 
@@ -430,7 +398,7 @@ namespace Library
 
             #endregion
 
-            Console.Write("Pressione enter para encerrar...");
+            Console.Write("Pressione qualquer tecla para encerrar...");
             Console.ReadKey();
         }
 
@@ -492,16 +460,16 @@ namespace Library
             Console.Write("Digite o logradouro do cliente: ");
             string logradouro = Console.ReadLine();
 
-            Console.Write("Digite o bairro do cliente: ");
+            Console.Write("Digite o bairro: ");
             string bairro = Console.ReadLine();
 
-            Console.Write("Digite a cidade do cliente: ");
+            Console.Write("Digite a cidade: ");
             string cidade = Console.ReadLine();
 
-            Console.Write("Digite o estado do cliente: ");
+            Console.Write("Digite o estado: ");
             string estado = Console.ReadLine();
 
-            Console.Write("Digite o CEP do cliente: ");
+            Console.Write("Digite o CEP: ");
             string cep = Console.ReadLine();
 
             Endereco endereco = new Endereco
@@ -560,7 +528,7 @@ namespace Library
 
             return livro;
         }
-        static EmprestimoLivro EmprestimoCadastrado(long numeroTombo, long idCliente)
+        static EmprestimoLivro CadastradoEmprestimo(long numeroTombo, long idCliente)
         {
             DateTime dataDevolucao;
             bool dataCorreta = false;
@@ -572,11 +540,18 @@ namespace Library
 
                 if (!DateTime.TryParseExact(dDevolucao, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dataDevolucao))
                 {
-                    Console.WriteLine("Digite novamente a data no formato dd/mm/aaaa");
+                    Console.WriteLine("\nDigite novamente a data no formato dd/mm/aaaa");
                 }
                 else
                 {
-                    dataCorreta = true;
+                    if (dataDevolucao < DateTime.Today)
+                    {
+                        Console.WriteLine("\nData de devolução anterior ao hoje, digite uma data futura...");
+                    }
+                    else
+                    {
+                        dataCorreta = true;
+                    }
                 }
             } while (!dataCorreta);
 
