@@ -60,6 +60,8 @@ namespace Library
                 op = Console.ReadLine();
                 string cpf;
                 long numeroTombo;
+                string nTombo;
+                bool funcionar;
                 switch (op)
                 {
                     
@@ -130,8 +132,8 @@ namespace Library
 
                         //Empréstimo de Livro
 
-                        string nTombo;
-                        bool funcionar = false;
+                       
+                        funcionar = false;
                         do
                         {
                             Console.Write("Digite o numero do tombo: ");
@@ -183,15 +185,31 @@ namespace Library
 
                         Console.Clear();
 
-                        if (EmprestimoCadastrado("apenas para funcionar"))
+                        funcionar = false;
+                        do
                         {
-                            Console.WriteLine("Livro não encontrado para devolução");
+                            Console.Write("Digite o numero do tombo: ");
+                            nTombo = Console.ReadLine();
+
+                            if (!long.TryParse(nTombo, out numeroTombo))
+                            {
+                                Console.WriteLine("Digite um número inteiro !\n");
+                            }
+                            else
+                            {
+                                funcionar = true;
+                            }
+                        } while (!funcionar);
+
+                        int index = arquivoEmprestimo.ProcuraNumeroTombo(numeroTombo);
+
+                        if (index == -1) //ProcuraNumeroTombo retorna -1 caso não encontre o index
+                        {
+                            Console.WriteLine("Livro não encontrado para devolução\n");
                         }
                         else
                         {
-                            int nEmprestimo = 0; //procurar o index do emprestimo
-
-                            double multa = EmprestimoLivro.CalculaMulta(emprestimos.ElementAt(nEmprestimo));
+                            double multa = EmprestimoLivro.CalculaMulta(emprestimos.ElementAt(index));
                             if (multa > 0)
                             {
                                 Console.WriteLine($"\nMulta a ser paga: R$ {multa:F2}");
@@ -202,6 +220,8 @@ namespace Library
                                     resposta = Console.ReadLine().ToLower();
                                     if (resposta == "s")
                                     {
+                                        emprestimos.ElementAt(index).StatusEmprestimo = 2;
+                                        arquivoEmprestimo.Devolucao(index);
                                         //alterar situação
                                         Console.WriteLine("\nSituação alterada para \"Devolvido\"...\n");
                                     }
@@ -218,6 +238,9 @@ namespace Library
                             else
                             {
                                 Console.WriteLine("\nO prazo da devolução foi cumprido\n");
+
+                                emprestimos.ElementAt(index).StatusEmprestimo = 2;
+                                arquivoEmprestimo.Devolucao(index);
                                 //alterar situação
                                 Console.WriteLine("salvando situação para \"Devolvido\"...\n");
                             }
@@ -464,25 +487,8 @@ namespace Library
 
             return emprestimo;
         }
-        static bool EmprestimoCadastrado(string exemplo) //apenas para exemplificar outro metodo
+        static bool EmprestimoCadastrado(long numeroTombo) //apenas para exemplificar outro metodo
         {
-            string nTombo;
-            long numeroTombo;
-            bool funcionar = false;
-            do
-            {
-                Console.Write("Digite o numero do tombo: ");
-                nTombo = Console.ReadLine();
-
-                if (!long.TryParse(nTombo, out numeroTombo))
-                {
-                    Console.WriteLine("Digite um número inteiro !");
-                }
-                else
-                {
-                    funcionar = true;
-                }
-            } while (!funcionar);
 
             //Verifica Livro
 
