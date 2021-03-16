@@ -64,7 +64,7 @@ namespace Library
                 bool funcionar;
                 switch (op)
                 {
-                    
+
 
                     case "1":
                         #region Cadastro Cliente
@@ -132,7 +132,7 @@ namespace Library
 
                         //Empréstimo de Livro
 
-                       
+
                         funcionar = false;
                         do
                         {
@@ -173,7 +173,7 @@ namespace Library
                             }
                         }
 
-                        
+
                         break;
 
                     #endregion
@@ -254,8 +254,97 @@ namespace Library
 
                     case "5":
                         #region Relatório de Emprestimos e Devoluções
+                        Console.Clear();
+                        Console.WriteLine(">>> Relatório de Emprestimos e Devoluções <<<");
+                        string op1;
+                        int j = 0;
+                        do
+                        {
+                            if (emprestimos.Count == 0)
+                            {
+                                Console.WriteLine("Nenhum emprestimo cadastrado!");
+                                op1 = "5";
+                            }
+                            else
+                            {
+                                Relatorio relatorio = new Relatorio();
 
-                        //Relatório de Emprestimos e Devoluções
+                                Console.Write("\n" + relatorio.Imprimir(clientes, livros, emprestimos[j]));
+
+                                Console.WriteLine("\nO que deseja fazer a seguir?\n" +
+                                                  "1 - Proximo\n" +
+                                                  "2 - Anterior\n" +
+                                                  "3 - Primeiro\n" +
+                                                  "4 - Ultimo\n" +
+                                                  "5 - Sair\n");
+                                Console.Write(">>> ");
+                                op1 = Console.ReadLine();
+
+                                switch (op1)
+                                {
+                                    case "1":
+                                        Console.Clear();
+                                        if (j == (emprestimos.Count - 1))
+                                        {
+                                            Console.WriteLine("Você esta no fim da lista de emprestimo");
+                                        }
+                                        else
+                                        {
+                                            j++;
+                                        }
+
+                                        break;
+
+                                    case "2":
+                                        Console.Clear();
+                                        if (j == 0)
+                                        {
+                                            Console.WriteLine("Você esta no inicio da lista de emprestimo");
+                                        }
+                                        else
+                                        {
+                                            j--;
+                                        }
+
+                                        break;
+
+                                    case "3":
+                                        Console.Clear();
+                                        if (j == 0)
+                                        {
+                                            Console.WriteLine("Você já está no inicio");
+                                        }
+                                        else
+                                        {
+                                            j = 0;
+                                        }
+                                        
+                                        break;
+
+                                    case "4":
+                                        Console.Clear();
+                                        if (j == emprestimos.Count - 1)
+                                        {
+                                            Console.WriteLine("Você já está no fim");
+                                        }
+                                        else
+                                        {
+                                            j = emprestimos.Count - 1;
+                                        }
+                                        
+                                        break;
+
+                                    case "5":
+                                        Console.Clear();
+                                        break;
+
+                                    default:
+                                        Console.Clear();
+                                        Console.WriteLine("Digite uma opção do menu");
+                                        break;
+                                }
+                            }
+                        } while (op1 != "5");
                         Console.Clear();
                         break;
 
@@ -405,13 +494,13 @@ namespace Library
         }
         static bool LivroCadastrado()
         {
-            
+
 
             //Verifica Livro
 
             return true;
         }
-        static Livro CadastroLivro(long numeroTombo , string isbn)
+        static Livro CadastroLivro(long numeroTombo, string isbn)
         {
             string titulo;
             string genero;
